@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questionário - Bem-Estar Acadêmico no Internato</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .section {
+            padding: 30px;
+            border-bottom: 1px solid #eee;
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section-title {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+
+        .consent-box {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .required::after {
+            content: " *";
+            color: #e74c3c;
+        }
+
+        .scale-info {
+            background: #e8f4fc;
+            border: 1px solid #3498db;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .scale-options {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .scale-option {
+            text-align: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+
+        .statement {
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            position: relative;
+        }
+
+        .statement.unanswered {
+            border-left: 4px solid #e74c3c;
+            background: #fdf2f2;
+        }
+
+        .statement-text {
+            font-weight: 500;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .statement-options {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .statement-option {
+            text-align: center;
+        }
+
+        .statement-option label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+            margin-bottom: 0;
+        }
+
+        .statement-option label:hover {
+            background-color: #f8f9fa;
+        }
+
+        .statement-option input {
+            margin: 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #ecf0f1;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            transition: width 0.3s;
+            width: 0%;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .completion-message {
+            text-align: center;
+            padding: 30px;
+            background: #e8f6f3;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.9em;
+            margin-top: 10px;
+            text-align: center;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+            }
+            
+            .scale-options,
+            .statement-options {
+                grid-template-columns: 1fr;
+                gap: 5px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            .btn-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .btn {
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Cabeçalho -->
+        <div class="header">
+            <h1>Questionário sobre Bem-Estar Acadêmico</h1>
+            <p>Centro Universitário Adventista de Engenheiro Coelho</p>
+        </div>
+
+        <!-- Barra de Progresso -->
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        <div class="progress-text" id="progress-text">Parte 1 de 7 - Consentimento</div>
+
+        <!-- SEÇÃO 1: CONSENTIMENTO -->
+        <div class="section active" id="section-consentimento">
+            <h2 class="section-title">Termo de Consentimento</h2>
+            <div class="consent-box">
+                <div class="consent-text">
+                    <p>Prezado(a) estudante,</p>
+                    <p>Este questionário tem como objetivo <strong>investigar o seu bem-estar acadêmico</strong> enquanto residente no internato universitário.</p>
+                    <br>
+                    <p>O questionário é <strong>anônimo e confidencial</strong>. Não há respostas certas ou erradas.</p>
+                    <br>
+                    <p><strong>Tempo médio de preenchimento:</strong> 10 a 15 minutos</p>
+                </div>
+
+                <div class="form-group">
+                    <label class="required">Você concorda em participar desta pesquisa?</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="consent" value="sim" required checked>
+                            <span>Sim, concordo em participar voluntariamente</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-container">
+                <div></div>
+                <button type="button" class="btn" onclick="avancarParaDados()">Avançar</button>
+            </div>
+        </div>
+
+        <!-- SEÇÃO 2: DADOS DEMOGRÁFICOS -->
+        <div class="section" id="section-dados">
+            <h2 class="section-title">Dados de Perfil</h2>
+            
+            <div class="form-group">
+                <label for="idade" class="required">Idade</label>
+                <input type="number" id="idade" name="idade" min="16" max="60" required>
+            </div>
+
+            <div class="form-group">
+                <label for="genero" class="required">Gênero</label>
+                <select id="genero" name="genero" required>
+                    <option value="">Selecione...</option>
+                    <option value="feminino">Feminino</option>
+                    <option value="masculino">Masculino</option>
+                    <option value="outro">Outro</option>
+                    <option value="prefiro_nao_informar">Prefiro não informar</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="curso" class="required">Curso</label>
+                <input type="text" id="curso" name="curso" required>
+            </div>
+
+            <div class="form-group">
+                <label class="required">Período/Ano</label>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="periodo" value="1ano" required>
+                        <span>1º ano</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="periodo" value="2ano">
+                        <span>2º ano</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="periodo" value="3ano">
+                        <span>3º ano</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="periodo" value="4ano">
+                        <span>4º ano ou mais</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="required">Tempo de residência no internato</label>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="tempo_residencia" value="menos_6meses" required>
+                        <span>Menos de 6 meses</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="tempo_residencia" value="6meses_1ano">
+                        <span>De 6 meses a 1 ano</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="tempo_residencia" value="1_2anos">
+                        <span>De 1 a 2 anos</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="tempo_residencia" value="mais_2anos">
+                        <span>Mais de 2 anos</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="btn-container">
+                <button type="button" class="btn btn-secondary" onclick="voltarParaConsentimento()">Voltar</button>
+                <button type="button" class="btn" id="btn-dados" onclick="avancarParaDimensao('A')">Iniciar Questionário</button>
+            </div>
+        </div>
+
+        <!-- SEÇÃO 3: DIMENSÃO A - INFRAESTRUTURA E AMBIENTE (10 perguntas) -->
+        <div class="section" id="section-dimensao-A">
+            <h2 class="section-title">Dimensão A: Infraestrutura e Ambiente</h2>
+            
+            <div class="scale-info">
+                <p><strong>Instruções:</strong> Para cada afirmação, indique o seu grau de concordância:</p>
+                <div class="scale-options">
+                    <div class="scale-option">1 - Discordo Totalmente</div>
+                    <div class="scale-option">2 - Discordo Parcialmente</div>
+                    <div class="scale-option">3 - Neutro</div>
+                    <div class="scale-option">4 - Concordo Parcialmente</div>
+                    <div class="scale-option">5 - Concordo Totalmente</div>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-A1">
+                <div class="statement-text">1. Os dormitórios oferecem boas condições de higiene e conservação.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="A1" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="A1" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="A1" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="A1" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="A1" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-A2">
+                <div class="statement-text">2. É fácil encontrar um local silencioso para estudar quando necessário.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="A2" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="A2" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="A2" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="A2" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="A2" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-A3">
+                <div class="statement-text">3. Os espaços de estudo, como salas e biblioteca, são suficientes e bem equipados.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="A3" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="A3" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="A3" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="A3" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="A3" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-A4">
+                <div class="statement-text">4. A infraestrutura do campus facilita a participação em atividades acadêmicas.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="A4" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="A4" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="A4" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="A4" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="A4" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-A5">
+                <div class="statement-text">5. A limpeza e a manutenção das áreas comuns são satisfatórias.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="A5" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="A5" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="A5" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="A5" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="A5" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-A6">
+                <div class="statement-text">6. A ventilação, iluminação e conforto dos dormitórios favorecem o descanso.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="A6" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="A6" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="A6" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="A6" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="A6" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-A7">
+                <div class="statement-text">7. É possível ter momentos de privacidade, mesmo dividindo o quarto com colegas.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="A7" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="A7" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="A7" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="A7" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="A7" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-A8">
+                <div class="statement-text">8. Há espaços seguros para guardar bicicletas, carros, motos e patinetes.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="A8" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="A8" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="A8" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="A8" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="A8" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-A9">
+                <div class="statement-text">9. O Wi-Fi atende de forma eficiente às necessidades do dia a dia.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="A9" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="A9" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="A9" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="A9" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="A9" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-A10">
+                <div class="statement-text">10. O acesso ao transporte público é fácil e conveniente.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="A10" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="A10" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="A10" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="A10" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="A10" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="error-message" id="error-A">Por favor, responda todas as perguntas antes de continuar.</div>
+
+            <div class="btn-container">
+                <button type="button" class="btn btn-secondary" onclick="voltarParaDados()">Voltar</button>
+                <button type="button" class="btn" id="btn-A" onclick="validarDimensao('A', 'B')">Próxima Dimensão</button>
+            </div>
+        </div>
+
+        <!-- SEÇÃO 4: DIMENSÃO B - RELAÇÕES SOCIAIS E APOIO (11 perguntas) -->
+        <div class="section" id="section-dimensao-B">
+            <h2 class="section-title">Dimensão B: Relações Sociais e Apoio</h2>
+            
+            <div class="scale-info">
+                <p><strong>Instruções:</strong> Para cada afirmação, indique o seu grau de concordância:</p>
+                <div class="scale-options">
+                    <div class="scale-option">1 - Discordo Totalmente</div>
+                    <div class="scale-option">2 - Discordo Parcialmente</div>
+                    <div class="scale-option">3 - Neutro</div>
+                    <div class="scale-option">4 - Concordo Parcialmente</div>
+                    <div class="scale-option">5 - Concordo Totalmente</div>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-B1">
+                <div class="statement-text">11. Há suporte para atividades de lazer e recreação nos momentos livres.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="B1" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="B1" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="B1" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="B1" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="B1" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-B2">
+                <div class="statement-text">12. Sinto-me à vontade para receber familiares e amigos.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="B2" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="B2" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="B2" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="B2" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="B2" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-B3">
+                <div class="statement-text">13. Há espaços adequados para momentos de privacidade com amigos ou parceiros.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="B3" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="B3" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="B3" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="B3" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="B3" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-B4">
+                <div class="statement-text">14. Posso contar com colegas do internato quando enfrento dificuldades acadêmicas.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="B4" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="B4" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="B4" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="B4" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="B4" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-B5">
+                <div class="statement-text">15. Sinto-me livre para expressar minhas crenças sem medo de julgamento.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="B5" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="B5" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="B5" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="B5" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="B5" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-B6">
+                <div class="statement-text">16. O internato respeita e apoia residentes em situações de vulnerabilidade emocional.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="B6" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="B6" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="B6" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="B6" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="B6" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-B7">
+                <div class="statement-text">17. Tenho confiança para conversar livremente com os preceptores.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="B7" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="B7" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="B7" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="B7" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="B7" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-B8">
+                <div class="statement-text">18. Minhas opiniões são consideradas quando apresento sugestões.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="B8" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="B8" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="B8" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="B8" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="B8" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-B9">
+                <div class="statement-text">19. Há oportunidades de participação estudantil nas decisões sobre melhorias no internato.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="B9" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="B9" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="B9" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="B9" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="B9" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-B10">
+                <div class="statement-text">20. Os funcionários do campus esclarecem adequadamente dúvidas acadêmicas.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="B10" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="B10" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="B10" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="B10" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="B10" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-B11">
+                <div class="statement-text">21. Os funcionários demonstram paciência e compreensão diante de dificuldades financeiras.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="B11" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="B11" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="B11" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="B11" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="B11" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="error-message" id="error-B">Por favor, responda todas as perguntas antes de continuar.</div>
+
+            <div class="btn-container">
+                <button type="button" class="btn btn-secondary" onclick="avancarParaDimensao('A')">Voltar</button>
+                <button type="button" class="btn" id="btn-B" onclick="validarDimensao('B', 'C')">Próxima Dimensão</button>
+            </div>
+        </div>
+
+        <!-- SEÇÃO 5: DIMENSÃO C - EQUILÍBRIO ACADÊMICO-PESSOAL (9 perguntas) -->
+        <div class="section" id="section-dimensao-C">
+            <h2 class="section-title">Dimensão C: Equilíbrio Acadêmico-Pessoal</h2>
+            
+            <div class="scale-info">
+                <p><strong>Instruções:</strong> Para cada afirmação, indique o seu grau de concordância:</p>
+                <div class="scale-options">
+                    <div class="scale-option">1 - Discordo Totalmente</div>
+                    <div class="scale-option">2 - Discordo Parcialmente</div>
+                    <div class="scale-option">3 - Neutro</div>
+                    <div class="scale-option">4 - Concordo Parcialmente</div>
+                    <div class="scale-option">5 - Concordo Totalmente</div>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-C1">
+                <div class="statement-text">22. Os horários das refeições são flexíveis e compatíveis com diferentes rotinas.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="C1" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="C1" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="C1" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="C1" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="C1" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-C2">
+                <div class="statement-text">23. O refeitório oferece opções alimentares equilibradas e adequadas à rotina dos residentes.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="C2" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="C2" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="C2" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="C2" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="C2" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-C3">
+                <div class="statement-text">24. A alimentação considera restrições e necessidades específicas.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="C3" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="C3" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="C3" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="C3" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="C3" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-C4">
+                <div class="statement-text">25. Em casos de emergência médica, o atendimento é rápido e eficaz.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="C4" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="C4" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="C4" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="C4" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="C4" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-C5">
+                <div class="statement-text">26. Realizo exames de rotina ao menos uma vez ao ano.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="C5" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="C5" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="C5" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="C5" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="C5" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-C6">
+                <div class="statement-text">27. Quando há uso de medicamentos controlados, eles são administrados nos horários corretos.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="C6" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="C6" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="C6" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="C6" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="C6" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-C7">
+                <div class="statement-text">28. Quando estou sobrecarregado academicamente, encontro apoio e compreensão.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="C7" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="C7" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="C7" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="C7" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="C7" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-C8">
+                <div class="statement-text">29. Quando concilio trabalho e estudo, recebo apoio em relação às regras do internato.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="C8" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="C8" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="C8" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="C8" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="C8" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-C9">
+                <div class="statement-text">30. Os recursos do internato (bolsas, auxílios e atividades) são distribuídos de maneira igualitária entre os estudantes.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="C9" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="C9" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="C9" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="C9" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="C9" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="error-message" id="error-C">Por favor, responda todas as perguntas antes de continuar.</div>
+
+            <div class="btn-container">
+                <button type="button" class="btn btn-secondary" onclick="avancarParaDimensao('B')">Voltar</button>
+                <button type="button" class="btn" id="btn-C" onclick="validarDimensao('C', 'D')">Próxima Dimensão</button>
+            </div>
+        </div>
+
+        <!-- SEÇÃO 6: DIMENSÃO D - SAÚDE EMOCIONAL E ADAPTAÇÃO (8 perguntas) -->
+        <div class="section" id="section-dimensao-D">
+            <h2 class="section-title">Dimensão D: Saúde Emocional e Adaptação</h2>
+            
+            <div class="scale-info">
+                <p><strong>Instruções:</strong> Para cada afirmação, indique o seu grau de concordância:</p>
+                <div class="scale-options">
+                    <div class="scale-option">1 - Discordo Totalmente</div>
+                    <div class="scale-option">2 - Discordo Parcialmente</div>
+                    <div class="scale-option">3 - Neutro</div>
+                    <div class="scale-option">4 - Concordo Parcialmente</div>
+                    <div class="scale-option">5 - Concordo Totalmente</div>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-D1">
+                <div class="statement-text">31. Há apoio psicológico profissional e confiável disponível no alojamento.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="D1" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="D1" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="D1" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="D1" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="D1" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-D2">
+                <div class="statement-text">32. Posso viver minha individualidade sem medo de preconceito.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="D2" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="D2" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="D2" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="D2" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="D2" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-D3">
+                <div class="statement-text">33. Confio que informações pessoais e de saúde são mantidas em sigilo.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="D3" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="D3" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="D3" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="D3" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="D3" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-D4">
+                <div class="statement-text">34. Sinto-me seguro(a) no campus e nas dependências do internato.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="D4" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="D4" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="D4" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="D4" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="D4" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-D5">
+                <div class="statement-text">35. As regras do internato não interferem negativamente na vida pessoal.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="D5" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="D5" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="D5" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="D5" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="D5" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-D6">
+                <div class="statement-text">36. As normas são aplicadas de forma justa a todos os residentes.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="D6" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="D6" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="D6" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="D6" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="D6" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-D7">
+                <div class="statement-text">37. Os horários de silêncio são respeitados.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="D7" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="D7" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="D7" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="D7" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="D7" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-D8">
+                <div class="statement-text">38. É possível adaptar-se bem à rotina do internato mantendo o bem-estar emocional.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="D8" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="D8" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="D8" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="D8" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="D8" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="error-message" id="error-D">Por favor, responda todas as perguntas antes de continuar.</div>
+
+            <div class="btn-container">
+                <button type="button" class="btn btn-secondary" onclick="avancarParaDimensao('C')">Voltar</button>
+                <button type="button" class="btn" id="btn-D" onclick="validarDimensao('D', 'E')">Próxima Dimensão</button>
+            </div>
+        </div>
+
+        <!-- SEÇÃO 7: DIMENSÃO E - PROPÓSITO E ESPIRITUALIDADE (12 perguntas) -->
+        <div class="section" id="section-dimensao-E">
+            <h2 class="section-title">Dimensão E: Propósito e Espiritualidade</h2>
+            
+            <div class="scale-info">
+                <p><strong>Instruções:</strong> Para cada afirmação, indique o seu grau de concordância:</p>
+                <div class="scale-options">
+                    <div class="scale-option">1 - Discordo Totalmente</div>
+                    <div class="scale-option">2 - Discordo Parcialmente</div>
+                    <div class="scale-option">3 - Neutro</div>
+                    <div class="scale-option">4 - Concordo Parcialmente</div>
+                    <div class="scale-option">5 - Concordo Totalmente</div>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-E1">
+                <div class="statement-text">39. O ambiente garante liberdade de expressão religiosa.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="E1" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="E1" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="E1" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="E1" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="E1" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-E2">
+                <div class="statement-text">40. As práticas espirituais institucionais respeitam as diferenças individuais e fortalecem o respeito mútuo.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="E2" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="E2" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="E2" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="E2" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="E2" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-E3">
+                <div class="statement-text">41. A vivência espiritual dentro do internato fortalece meu senso de propósito de vida.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="E3" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="E3" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="E3" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="E3" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="E3" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-E4">
+                <div class="statement-text">42. A rotina acadêmica e espiritual do campus estão em harmonia, favorecendo meu equilíbrio pessoal.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="E4" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="E4" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="E4" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="E4" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="E4" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-E5">
+                <div class="statement-text">43. Percebo que minha espiritualidade me ajuda a enfrentar desafios e manter o equilíbrio emocional diante das dificuldades.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="E5" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="E5" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="E5" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="E5" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="E5" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-E6">
+                <div class="statement-text">44. As atividades espirituais promovidas pela instituição ajudam-me a refletir sobre meus valores e metas.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="E6" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="E6" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="E6" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="E6" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="E6" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-E7">
+                <div class="statement-text">45. A convivência no internato reforça meu sentimento de pertencimento à comunidade de fé.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="E7" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="E7" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="E7" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="E7" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="E7" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-E8">
+                <div class="statement-text">46. Não percebo relação entre minha fé e meu crescimento acadêmico.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="E8" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="E8" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="E8" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="E8" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="E8" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-E9">
+                <div class="statement-text">47. Sinto que posso expressar minhas crenças de forma autêntica e sem julgamentos.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="E9" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="E9" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="E9" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="E9" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="E9" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-E10">
+                <div class="statement-text">48. As lojas de conveniência do campus praticam preços acessíveis.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="E10" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="E10" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="E10" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="E10" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="E10" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-E11">
+                <div class="statement-text">49. Minha espiritualidade contribui para meu bem-estar geral no internato.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="E11" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="E11" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="E11" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="E11" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="E11" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="statement" id="statement-E12">
+                <div class="statement-text">50. O ambiente do internato favorece meu desenvolvimento espiritual e acadêmico de forma integrada.</div>
+                <div class="statement-options">
+                    <label class="statement-option"><input type="radio" name="E12" value="1" required> 1</label>
+                    <label class="statement-option"><input type="radio" name="E12" value="2"> 2</label>
+                    <label class="statement-option"><input type="radio" name="E12" value="3"> 3</label>
+                    <label class="statement-option"><input type="radio" name="E12" value="4"> 4</label>
+                    <label class="statement-option"><input type="radio" name="E12" value="5"> 5</label>
+                </div>
+            </div>
+
+            <div class="error-message" id="error-E">Por favor, responda todas as perguntas antes de continuar.</div>
+
+            <div class="btn-container">
+                <button type="button" class="btn btn-secondary" onclick="avancarParaDimensao('D')">Voltar</button>
+                <button type="button" class="btn btn-success" id="btn-E" onclick="validarDimensao('E', 'final')">Finalizar Questionário</button>
+            </div>
+        </div>
+
+        <!-- SEÇÃO 8: AGRADECIMENTO FINAL -->
+        <div class="section" id="section-final">
+            <div class="completion-message">
+                <h2>🎉 Questionário Concluído!</h2>
+                <p>Muito obrigado pela sua participação!</p>
+                <p>Sua contribuição é fundamental para a melhoria do nosso internato.</p>
+                <br>
+                <p><strong>Total de perguntas respondidas: 50</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sistema de navegação entre seções
+        const secoes = [
+            'section-consentimento',
+            'section-dados', 
+            'section-dimensao-A',
+            'section-dimensao-B',
+            'section-dimensao-C',
+            'section-dimensao-D',
+            'section-dimensao-E',
+            'section-final'
+        ];
+
+        // Quantidade de perguntas por dimensão
+        const quantidades = {
+            'A': 10,
+            'B': 11,
+            'C': 9,
+            'D': 8,
+            'E': 12
+        };
+
+        let secaoAtualIndex = 0;
+
+        function mostrarSecao(index) {
+            // Esconde todas as seções
+            document.querySelectorAll('.section').forEach(sec => {
+                sec.classList.remove('active');
+            });
+            
+            // Mostra a seção especificada
+            document.getElementById(secoes[index]).classList.add('active');
+            
+            // Atualiza a barra de progresso
+            atualizarProgresso(index);
+            
+            // Atualiza o índice atual
+            secaoAtualIndex = index;
+        }
+
+        function atualizarProgresso(index) {
+            const progresso = document.getElementById('progress');
+            const textoProgresso = document.getElementById('progress-text');
+            const porcentagem = (index / (secoes.length - 1)) * 100;
+            
+            progresso.style.width = porcentagem + '%';
+            
+            const textosProgresso = [
+                'Parte 1 de 7 - Consentimento',
+                'Parte 2 de 7 - Dados Demográficos', 
+                'Parte 3 de 7 - Infraestrutura e Ambiente (10 perguntas)',
+                'Parte 4 de 7 - Relações Sociais e Apoio (11 perguntas)',
+                'Parte 5 de 7 - Equilíbrio Acadêmico-Pessoal (9 perguntas)',
+                'Parte 6 de 7 - Saúde Emocional e Adaptação (8 perguntas)',
+                'Parte 7 de 7 - Propósito e Espiritualidade (12 perguntas)',
+                'Questionário Concluído!'
+            ];
+            
+            textoProgresso.textContent = textosProgresso[index];
+        }
+
+        // Função para validar se todas as perguntas de uma dimensão foram respondidas
+        function validarDimensao(dimensaoAtual, proximaDimensao) {
+            const errorElement = document.getElementById(`error-${dimensaoAtual}`);
+            let todasRespondidas = true;
+            
+            // Remove destaque de erro anterior
+            document.querySelectorAll(`#section-dimensao-${dimensaoAtual} .statement`).forEach(statement => {
+                statement.classList.remove('unanswered');
+            });
+            
+            // Verifica cada pergunta da dimensão atual usando a quantidade correta
+            const quantidade = quantidades[dimensaoAtual];
+            for (let i = 1; i <= quantidade; i++) {
+                const pergunta = document.querySelector(`input[name="${dimensaoAtual}${i}"]:checked`);
+                if (!pergunta) {
+                    todasRespondidas = false;
+                    // Destaca a pergunta não respondida
+                    document.getElementById(`statement-${dimensaoAtual}${i}`).classList.add('unanswered');
+                }
+            }
+            
+            if (!todasRespondidas) {
+                errorElement.classList.add('show');
+                // Rola para o topo da seção para mostrar a mensagem de erro
+                document.getElementById(`section-dimensao-${dimensaoAtual}`).scrollTop = 0;
+                return;
+            }
+            
+            // Se todas foram respondidas, avança
+            errorElement.classList.remove('show');
+            
+            if (proximaDimensao === 'final') {
+                finalizarQuestionario();
+            } else {
+                avancarParaDimensao(proximaDimensao);
+            }
+        }
+
+        // Funções de navegação
+        function avancarParaDados() {
+            mostrarSecao(1);
+        }
+
+        function voltarParaConsentimento() {
+            mostrarSecao(0);
+        }
+
+        function avancarParaDimensao(dimensao) {
+            // Validação básica dos campos obrigatórios para dados demográficos
+            if (secaoAtualIndex === 1) {
+                const idade = document.getElementById('idade').value;
+                const genero = document.getElementById('genero').value;
+                const curso = document.getElementById('curso').value;
+                const periodo = document.querySelector('input[name="periodo"]:checked');
+                const tempoResidencia = document.querySelector('input[name="tempo_residencia"]:checked');
+                
+                if (!idade || !genero || !curso || !periodo || !tempoResidencia) {
+                    alert('Por favor, preencha todos os campos obrigatórios.');
+                    return;
+                }
+            }
+            
+            const proximaSecao = secoes.findIndex(sec => sec === `section-dimensao-${dimensao}`);
+            if (proximaSecao !== -1) {
+                mostrarSecao(proximaSecao);
+            }
+        }
+
+        function voltarParaDados() {
+            mostrarSecao(1);
+        }
+
+        function finalizarQuestionario() {
+            // Aqui você pode adicionar código para salvar as respostas
+            // Por exemplo: enviar para um servidor, Google Forms, etc.
+            
+            alert('Obrigado! Suas respostas foram salvas com sucesso!');
+            mostrarSecao(7);
+        }
+
+        // Adiciona event listeners para remover o destaque de erro quando uma pergunta for respondida
+        document.addEventListener('change', function(e) {
+            if (e.target.type === 'radio') {
+                const statement = e.target.closest('.statement');
+                if (statement) {
+                    statement.classList.remove('unanswered');
+                    
+                    // Remove mensagem de erro se todas estiverem respondidas
+                    const section = statement.closest('.section');
+                    const dimensao = section.id.split('-')[2];
+                    const errorElement = document.getElementById(`error-${dimensao}`);
+                    
+                    let todasRespondidas = true;
+                    const quantidade = quantidades[dimensao];
+                    for (let i = 1; i <= quantidade; i++) {
+                        const pergunta = document.querySelector(`input[name="${dimensao}${i}"]:checked`);
+                        if (!pergunta) {
+                            todasRespondidas = false;
+                            break;
+                        }
+                    }
+                    
+                    if (todasRespondidas) {
+                        errorElement.classList.remove('show');
+                    }
+                }
+            }
+        });
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            mostrarSecao(0);
+            
+            // Marca automaticamente o consentimento como aceito
+            document.querySelector('input[name="consent"]').checked = true;
+        });
+    </script>
+</body>
+</html>
